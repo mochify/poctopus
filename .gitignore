@@ -1,3 +1,8 @@
+# configuration file
+config.py
+supervisord.conf
+rethinkdb_data
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

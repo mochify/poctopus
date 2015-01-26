@@ -1,0 +1,54 @@
+[supervisorctl]
+serverurl=unix:///tmp/supervisor.sock
+
+[program:rethinkdb]
+command=/usr/local/bin/rethinkdb
+directory=/proctopus-full-path
+autostart=true
+autorestart=true
+stopsignal=INT
+startsecs=0
+priority=0
+
+[program:rabbitmq]
+command=/usr/local/sbin/rabbitmq-server
+autostart=true
+autorestart=true
+stopsignal=INT
+startsecs=0
+priority=10
+
+[program:proctopy]
+command=/path/to/poc_venv/bin/python runserver.py
+directory=/proctopus-full-path
+autostart=true
+autorestart=true
+stopsignal=INT
+priority=900
+
+
+[program:celery_workers]
+command=/path/to/poc_venv/bin/celery worker -A proctopy.tasks -l info --concurrency=4
+directory=/proctopus-full-path
+autostart=true
+autorestart=true
+stopsignal=INT
+startsecs=0
+
+[supervisord]
+logfile = /tmp/supervisord.log
+logfile_maxbytes = 50MB
+logfile_backups=10
+loglevel = info
+pidfile = /tmp/supervisord.pid
+nodaemon = false
+minfds = 1024
+minprocs = 200
+umask = 022
+user = birryree
+identifier = supervisor
+directory = {PATH}
+nocleanup = true
+childlogdir = /tmp
+strip_ansi = false
+environment = PROCTOPY_SETTINGS="{PATH TO PROCTOPY CONFIG}"
